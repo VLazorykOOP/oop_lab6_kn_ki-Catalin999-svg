@@ -1,0 +1,30 @@
+#include <iostream>
+using namespace std;
+
+// Без віртуального успадкування
+class A1 { int a1; };
+class B1 : public A1 { int b1; };
+class C1 : public A1 { int c1; };
+class D1 : public B1, public C1 { int d1; };
+
+// З віртуальним успадкуванням
+class A2 { int a2; };
+class B2 : virtual public A2 { int b2; };
+class C2 : virtual public A2 { int c2; };
+class D2 : public B2, public C2 { int d2; };
+
+int main() {
+    cout << "Без віртуального успадкування:\n";
+    cout << "Size of A1: " << sizeof(A1) << endl;
+    cout << "Size of B1: " << sizeof(B1) << endl;
+    cout << "Size of C1: " << sizeof(C1) << endl;
+    cout << "Size of D1: " << sizeof(D1) << endl;
+
+    cout << "\nЗ віртуальним успадкуванням:\n";
+    cout << "Size of A2: " << sizeof(A2) << endl;
+    cout << "Size of B2: " << sizeof(B2) << endl;
+    cout << "Size of C2: " << sizeof(C2) << endl;
+    cout << "Size of D2: " << sizeof(D2) << endl;
+
+    return 0;
+}

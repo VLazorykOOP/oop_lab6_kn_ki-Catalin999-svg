@@ -1,0 +1,98 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Працівник {
+protected:
+    string ім_я;
+    string посада;
+    double зарплата;
+
+public:
+    Працівник() : ім_я(""), посада(""), зарплата(0) {}
+    Працівник(string ім_я, string посада, double зарплата) :
+        ім_я(ім_я), посада(посада), зарплата(зарплата) {}
+
+    virtual ~Працівник() {}
+
+    virtual void print() const {
+        cout << "Ім'я: " << ім_я << ", Посада: " << посада << ", Зарплата: " << зарплата << endl;
+    }
+
+    friend istream& operator>>(istream& in, Працівник& p) {
+        cout << "Ім'я: "; in >> p.ім_я;
+        cout << "Посада: "; in >> p.посада;
+        cout << "Зарплата: "; in >> p.зарплата;
+        return in;
+    }
+
+    friend ostream& operator<<(ostream& out, const Працівник& p) {
+        out << "Ім'я: " << p.ім_я << ", Посада: " << p.посада << ", Зарплата: " << p.зарплата;
+        return out;
+    }
+};
+
+class БатькоСімейства {
+protected:
+    int кількість_дітей;
+    string прізвище;
+
+public:
+    БатькоСімейства() : кількість_дітей(0), прізвище("") {}
+    БатькоСімейства(int діти, string прізвище) :
+        кількість_дітей(діти), прізвище(прізвище) {}
+
+    virtual ~БатькоСімейства() {}
+
+    virtual void print() const {
+        cout << "Прізвище: " << прізвище << ", Кількість дітей: " << кількість_дітей << endl;
+    }
+
+    friend istream& operator>>(istream& in, БатькоСімейства& b) {
+        cout << "Прізвище: "; in >> b.прізвище;
+        cout << "Кількість дітей: "; in >> b.кількість_дітей;
+        return in;
+    }
+
+    friend ostream& operator<<(ostream& out, const БатькоСімейства& b) {
+        out << "Прізвище: " << b.прізвище << ", Кількість дітей: " << b.кількість_дітей;
+        return out;
+    }
+};
+
+class ПрацівникБатькоСімейства : public Працівник, public БатькоСімейства {
+public:
+    ПрацівникБатькоСімейства() {}
+    ПрацівникБатькоСімейства(string ім_я, string посада, double зарплата,
+                              int діти, string прізвище)
+        : Працівник(ім_я, посада, зарплата),
+          БатькоСімейства(діти, прізвище) {}
+
+    void print() const override {
+        Працівник::print();
+        БатькоСімейства::print();
+    }
+
+    friend istream& operator>>(istream& in, ПрацівникБатькоСімейства& pbs) {
+        in >> static_cast<Працівник&>(pbs);
+        in >> static_cast<БатькоСімейства&>(pbs);
+        return in;
+    }
+
+    friend ostream& operator<<(ostream& out, const ПрацівникБатькоСімейства& pbs) {
+        out << static_cast<const Працівник&>(pbs) << endl;
+        out << static_cast<const БатькоСімейства&>(pbs);
+        return out;
+    }
+
+    virtual ~ПрацівникБатькоСімейства() {}
+};
+
+int main() {
+    ПрацівникБатькоСімейства p;
+    cin >> p;
+    cout << "\nІнформація про працівника-батька сімейства:\n";
+    cout << p;
+
+    return 0;
+}

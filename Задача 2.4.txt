@@ -1,0 +1,71 @@
+#include <iostream>
+#include <cmath>
+#include <iomanip>
+using namespace std;
+
+class Function {
+public:
+    virtual double calculate(double x) const = 0;
+    virtual ~Function() {}
+};
+
+// Пряма: y = ax + b
+class Line : public Function {
+    double a, b;
+public:
+    Line(double a, double b) : a(a), b(b) {}
+    double calculate(double x) const override {
+        return a * x + b;
+    }
+};
+
+// Еліпс: x^2/a^2 + y^2/b^2 = 1 -> y = ±b * sqrt(1 - x^2/a^2)
+class Ellipse : public Function {
+    double a, b;
+public:
+    Ellipse(double a, double b) : a(a), b(b) {}
+    double calculate(double x) const override {
+        if (abs(x) > a) {
+            throw domain_error("x поза межами еліпса");
+        }
+        return b * sqrt(1 - (x * x) / (a * a));
+    }
+};
+
+// Гіпербола: x^2/a^2 - y^2/b^2 = 1 -> y = ±b * sqrt(x^2/a^2 - 1)
+class Hyperbola : public Function {
+    double a, b;
+public:
+    Hyperbola(double a, double b) : a(a), b(b) {}
+    double calculate(double x) const override {
+        if (abs(x) < a) {
+            throw domain_error("x в межах області розриву гіперболи");
+        }
+        return b * sqrt((x * x) / (a * a) - 1);
+    }
+};
+
+int main() {
+    Line line(2, 3);
+    Ellipse ellipse(5, 4);
+    Hyperbola hyperbola(3, 2);
+
+    double x = 2;
+
+    cout << fixed << setprecision(3);
+    cout << "Line: y = " << line.calculate(x) << endl;
+
+    try {
+        cout << "Ellipse: y = " << ellipse.calculate(x) << endl;
+    } catch (const exception &e) {
+        cout << "Ellipse: " << e.what() << endl;
+    }
+
+    try {
+        cout << "Hyperbola: y = " << hyperbola.calculate(x) << endl;
+    } catch (const exception &e) {
+        cout << "Hyperbola: " << e.what() << endl;
+    }
+
+    return 0;
+}
